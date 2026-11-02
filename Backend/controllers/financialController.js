@@ -306,7 +306,7 @@ exports.getPlanning = async (req, res) => {
     const [[accountRows], [debts], [planned], [cards], [movementRows], [futureContributions]] = await Promise.all([
       pool.query('SELECT COALESCE(SUM(saldo), 0) AS saldo FROM contas WHERE usuario_id = ?', [usuarioId]),
       pool.query(
-        `SELECT id, descricao, valor, data_vencimento
+        `SELECT id, descricao, COALESCE(valor, valor_restante, valor_total, 0) AS valor, data_vencimento
          FROM dividas WHERE status IN ('pendente','atrasada') AND data_vencimento <= ? AND usuario_id = ?`,
         [horizonEnd, usuarioId]
       ),
@@ -467,7 +467,7 @@ exports.getPlanning = async (req, res) => {
       avisos: [...new Set(warnings)],
     });
   } catch (error) {
-    console.error('Erro ao calcular planejamento', error.code || error.message);
+    console.error('Erro ao calcular planejamento:', error);
     res.status(500).json({ error: 'Não foi possível calcular o planejamento financeiro' });
   }
 };

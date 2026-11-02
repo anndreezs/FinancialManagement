@@ -52,8 +52,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           <span className="text-lg font-semibold tracking-tight text-foreground">Financeiro</span>
         </div>
         <button
-          onClick={onClose}
-          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground lg:hidden"
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground lg:hidden cursor-pointer"
           aria-label="Fechar menu"
         >
           <X className="h-5 w-5" />
@@ -143,28 +147,27 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Mobile Sidebar */}
       <AnimatePresence>
         {isOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => {
-              if (window.innerWidth < 1024) {
-                onClose();
-              }
-            }}
-              className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm lg:hidden"
-            />
-            <motion.aside
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="fixed inset-y-0 left-0 z-50 w-full max-w-xs border-r border-sidebar-border bg-sidebar lg:hidden"
-            >
-              {renderNavContent()}
-            </motion.aside>
-          </>
+          <motion.div
+            key="mobile-sidebar-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={onClose}
+            className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm lg:hidden"
+          />
+        )}
+        {isOpen && (
+          <motion.aside
+            key="mobile-sidebar-aside"
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="fixed inset-y-0 left-0 z-50 w-full max-w-xs border-r border-sidebar-border bg-sidebar lg:hidden flex flex-col"
+          >
+            {renderNavContent()}
+          </motion.aside>
         )}
       </AnimatePresence>
     </>

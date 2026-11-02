@@ -81,16 +81,22 @@ CREATE TABLE IF NOT EXISTS dividas (
   id SERIAL PRIMARY KEY,
   usuario_id INT NOT NULL REFERENCES usuarios (id) ON DELETE CASCADE,
   descricao VARCHAR(255) NOT NULL,
-  valor_total NUMERIC(12,2) NOT NULL,
-  valor_restante NUMERIC(12,2) NOT NULL,
+  valor NUMERIC(12,2) NOT NULL DEFAULT 0.00,
+  valor_total NUMERIC(12,2) DEFAULT NULL,
+  valor_restante NUMERIC(12,2) DEFAULT NULL,
+  data_vencimento DATE NOT NULL,
+  categoria_id INT DEFAULT NULL REFERENCES categorias (id) ON DELETE SET NULL,
+  tipo_divida VARCHAR(20) NOT NULL DEFAULT 'fixa',
+  parcela_total INT DEFAULT NULL,
+  parcela_atual INT DEFAULT NULL,
   parcelas_totais INT NOT NULL DEFAULT 1,
   parcelas_pagas INT NOT NULL DEFAULT 0,
-  data_vencimento DATE NOT NULL,
   credor VARCHAR(100) DEFAULT NULL,
   status VARCHAR(20) NOT NULL DEFAULT 'pendente',
   conta_id INT DEFAULT NULL REFERENCES contas (id) ON DELETE SET NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT chk_dividas_valor CHECK (valor >= 0)
 );
 
 -- 7. Tabela de Metas Financeiras
@@ -269,6 +275,7 @@ CREATE INDEX IF NOT EXISTS ix_contas_usuario ON contas (usuario_id);
 CREATE INDEX IF NOT EXISTS ix_cartoes_usuario ON cartoes (usuario_id);
 CREATE INDEX IF NOT EXISTS ix_categorias_usuario ON categorias (usuario_id);
 CREATE INDEX IF NOT EXISTS ix_dividas_usuario ON dividas (usuario_id, data_vencimento);
+CREATE INDEX IF NOT EXISTS ix_dividas_categoria ON dividas (categoria_id);
 CREATE INDEX IF NOT EXISTS ix_transacoes_usuario_data ON transacoes (usuario_id, data);
 CREATE INDEX IF NOT EXISTS ix_transacoes_status ON transacoes (status);
 CREATE INDEX IF NOT EXISTS ix_goals_usuario ON goals (usuario_id);
