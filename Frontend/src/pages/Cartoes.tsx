@@ -52,6 +52,7 @@ const cardColors = [
   'from-orange-500 to-orange-700',
   'from-cyan-500 to-cyan-700',
   'from-emerald-500 to-emerald-700',
+  'from-black to-white',
 ];
 
 /* ================= PERSISTÊNCIA DE CORES ================= */
