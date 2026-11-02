@@ -1,0 +1,37 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Deploy Frontend
+        run: |
+          set -e
+
+          # PROD: fonte do frontend
+          cd /home/deploy/bright-finance-hub
+
+          # Atualizar código
+          git fetch origin
+          git checkout main
+          git pull origin main
+
+          # Instalar deps e buildar
+          npm ci
+          npm run build
+
+          # Limpar e copiar build para o diretório servido pelo nginx
+          sudo rm -rf /var/www/financeiro/*
+          sudo cp -r dist/* /var/www/financeiro/
+
+          # Recarregar nginx
+          sudo systemctl reload nginx
