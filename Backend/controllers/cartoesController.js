@@ -74,6 +74,7 @@ exports.criarCartao = async (req, res) => {
       usuario_id: usuarioId,
     });
   } catch (err) {
+    console.error('Erro ao criar cartão:', err);
     res.status(500).json({ error: 'Erro ao criar cartão' });
   }
 };

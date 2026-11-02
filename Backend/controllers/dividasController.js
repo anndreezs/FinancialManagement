@@ -103,9 +103,9 @@ exports.criarDivida = async (req, res) => {
           : data_vencimento;
         const [result] = await connection.query(
           `INSERT INTO dividas
-           (descricao, valor, data_vencimento, categoria_id, tipo_divida, parcela_total, parcela_atual, status, usuario_id)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 'pendente', ?)`,
-          [descricao.trim(), centsToDecimal(amountCents), dueDate, categoria_id,
+           (descricao, valor, valor_total, data_vencimento, categoria_id, tipo_divida, parcela_total, parcela_atual, status, usuario_id)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pendente', ?)`,
+          [descricao.trim(), centsToDecimal(amountCents), centsToDecimal(amountCents), dueDate, categoria_id,
             tipo_divida, tipo_divida === 'parcelada' ? count : null,
             tipo_divida === 'parcelada' ? index : null, usuarioId]
         );
